@@ -1,0 +1,27 @@
+{
+  "name": "hello_near",
+  "version": "1.0.0",
+  "license": "(MIT AND Apache-2.0)",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build-staking-pool && npm run build-trading-platform && npm run build-attack",
+    "build-staking-pool": "near-sdk-js build src/staking-pool.ts build/staking_pool.wasm",
+    "build-trading-platform": "near-sdk-js build src/trading-platform.ts build/trading_platform.wasm",
+    "build-attack": "near-sdk-js build src/attack.ts build/attack.wasm",
+    "test": "npm run build && ava --timeout=5m"
+  },
+  "dependencies": {
+    "near-cli": "^4.0.8",
+    "near-sdk-js": "1.0.0"
+  },
+  "devDependencies": {
+    "@ava/typescript": "^4.1.0",
+    "ava": "^6.1.2",
+    "near-workspaces": "^3.5.0",
+    "prettier": "^3.2.5",
+    "ts-morph": "^21.0.1",
+    "ts-node": "^10.9.2",
+    "tsimp": "^2.0.11",
+    "typescript": "^5.3.3"
+  }
+}
